@@ -1,0 +1,6 @@
+/target
+/Cargo.lock
+/input/test.txt
+/input/_*
+/src/solution_*
+/.vscode
