@@ -35,7 +35,6 @@ pub fn part2(input: &[String]) -> i32 {
     let mut power_summation: i32 = 0;
     for line in input {
         let a: Vec<_> = line.split(": ").collect();
-        let b: Vec<_> = a[0].split(' ').collect();
         let draws: Vec<_> = a[1].split("; ").collect();
         let mut red_min = 0;
         let mut green_min = 0;
@@ -56,7 +55,7 @@ pub fn part2(input: &[String]) -> i32 {
                 };
             }
         }
-        power_summation += (red_min * green_min * blue_min);
+        power_summation += red_min * green_min * blue_min;
     }
     power_summation
 }
