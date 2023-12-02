@@ -49,21 +49,9 @@ pub fn part2(input: &[String]) -> i32 {
                 let count: i32 = parts[0].parse().unwrap();
                 let color = parts[1];
                 match color {
-                    "red" => {
-                        if count > red_min {
-                            red_min = count
-                        }
-                    }
-                    "green" => {
-                        if count > green_min {
-                            green_min = count
-                        }
-                    }
-                    "blue" => {
-                        if count > blue_min {
-                            blue_min = count
-                        }
-                    }
+                    "red" if count > red_min => red_min = count,
+                    "green" if count > green_min => green_min = count,
+                    "blue" if count > blue_min => blue_min = count,
                     _ => (),
                 };
             }
