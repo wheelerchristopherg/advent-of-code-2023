@@ -1,7 +1,7 @@
 use std::char;
 
 pub fn part1(input: &[String]) -> i32 {
-    let mut numbers: Vec<i32> = vec![];
+    let mut numbers = 0;
     for line in input {
         let mut digits: Vec<char> = vec![];
         for c in line.chars() {
@@ -11,10 +11,10 @@ pub fn part1(input: &[String]) -> i32 {
         }
         if !digits.is_empty() {
             let num: String = format!("{}{}", digits.first().unwrap(), digits.last().unwrap());
-            numbers.push(num.parse::<i32>().unwrap());
+            numbers += num.parse::<i32>().unwrap();
         }
     }
-    numbers.iter().sum()
+    numbers
 }
 
 fn find_digits(input: &str) -> i32 {
@@ -29,32 +29,27 @@ fn find_digits(input: &str) -> i32 {
         let last = input.rfind(s);
         if let (Some(f), Some(l)) = (first, last) {
             if f <= first_occurance.1 {
-                // println!("{:?}", first);
                 first_occurance.0 = (i % 9) + 1;
                 first_occurance.1 = f;
             }
             if l >= last_occurance.1 {
-                // println!("{:?}", last);
                 last_occurance.0 = (i % 9) + 1;
                 last_occurance.1 = l;
             }
         }
     }
-    // println!("first_occurance: {:?}", first_occurance);
-    // println!("last_occurance: {:?}", last_occurance);
     (first_occurance.0 * 10 + last_occurance.0)
         .try_into()
         .unwrap()
 }
 
 pub fn part2(input: &[String]) -> i32 {
-    let mut numbers: Vec<i32> = vec![];
+    let mut numbers = 0;
     for line in input {
         let num = find_digits(line);
-        println!("{}: {}", num, line);
-        numbers.push(num);
+        numbers += num;
     }
-    numbers.iter().sum()
+    numbers
 }
 
 #[cfg(test)]
