@@ -78,7 +78,6 @@ mod tests {
         println!("Result: {result}");
     }
 
-
     #[test]
     fn test_line1() {
         let input = "5dxcsvgqkmz";
