@@ -86,8 +86,7 @@ pub fn part2(input: &[String]) -> i32 {
         .collect::<Vec<_>>();
     for i in 0..scratch_cards.len() {
         scratch_cards[i].evaluate();
-        let cards_won = scratch_cards[i].cards_won.clone();
-        for &id_copy in cards_won.iter() {
+        for &id_copy in scratch_cards[i].cards_won.clone().iter() {
             scratch_cards[(id_copy - 1) as usize].count += 1;
         }
     }
