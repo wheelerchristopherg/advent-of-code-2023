@@ -153,16 +153,24 @@ pub fn part2(input: &[String]) -> i32 {
 
 #[derive(Debug)]
 struct GridCell {
-  visited: bool,
-  value: char,
+    visited: bool,
+    value: char,
 }
 
-
-
 pub fn part1_no_set(input: &[String]) -> i32 {
-    let mut grid: Vec<Vec<GridCell>> = input.iter().map(|x| x.chars().map(|x| GridCell{visited:false, value:x}).collect()).collect();
+    let mut grid: Vec<Vec<GridCell>> = input
+        .iter()
+        .map(|x| {
+            x.chars()
+                .map(|x| GridCell {
+                    visited: false,
+                    value: x,
+                })
+                .collect()
+        })
+        .collect();
     let length = grid[0].len();
-    let adjacent_positions: [(i32, i32);8] = [
+    let adjacent_positions: [(i32, i32); 8] = [
         (-1, -1),
         (0, -1),
         (1, -1),
@@ -190,8 +198,7 @@ pub fn part1_no_set(input: &[String]) -> i32 {
                         let mut left_bound: usize = 0;
                         let mut right_bound: usize = length;
                         while i >= 0 {
-                            if grid[y2][i as usize].value.is_numeric()
-                            {
+                            if grid[y2][i as usize].value.is_numeric() {
                                 grid[y2][i as usize].visited = true;
                                 i -= 1;
                             } else {
@@ -201,8 +208,7 @@ pub fn part1_no_set(input: &[String]) -> i32 {
                         }
                         i = (x2 as i32) + 1;
                         while (i as usize) < grid[0].len() {
-                            if grid[y2][i as usize].value.is_numeric()
-                            {
+                            if grid[y2][i as usize].value.is_numeric() {
                                 grid[y2][i as usize].visited = true;
                                 i += 1;
                             } else {
@@ -225,9 +231,19 @@ pub fn part1_no_set(input: &[String]) -> i32 {
 }
 
 pub fn part2_no_set(input: &[String]) -> i32 {
-    let mut grid: Vec<Vec<GridCell>> = input.iter().map(|x| x.chars().map(|x| GridCell{visited:false, value:x}).collect()).collect();
+    let mut grid: Vec<Vec<GridCell>> = input
+        .iter()
+        .map(|x| {
+            x.chars()
+                .map(|x| GridCell {
+                    visited: false,
+                    value: x,
+                })
+                .collect()
+        })
+        .collect();
     let length = grid[0].len();
-    let adjacent_positions: [(i32, i32);8] = [
+    let adjacent_positions: [(i32, i32); 8] = [
         (-1, -1),
         (0, -1),
         (1, -1),
@@ -257,8 +273,7 @@ pub fn part2_no_set(input: &[String]) -> i32 {
                         let mut left_bound: usize = 0;
                         let mut right_bound: usize = length;
                         while i >= 0 {
-                            if grid[y2][i as usize].value.is_numeric()
-                            {
+                            if grid[y2][i as usize].value.is_numeric() {
                                 grid[y2][i as usize].visited = true;
                                 i -= 1;
                             } else {
@@ -268,8 +283,7 @@ pub fn part2_no_set(input: &[String]) -> i32 {
                         }
                         i = (x2 as i32) + 1;
                         while (i as usize) < grid[0].len() {
-                            if grid[y2][i as usize].value.is_numeric()
-                            {
+                            if grid[y2][i as usize].value.is_numeric() {
                                 grid[y2][i as usize].visited = true;
                                 i += 1;
                             } else {
