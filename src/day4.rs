@@ -28,11 +28,12 @@ pub fn part1(input: &[String]) -> i32 {
     total_score
 }
 
+#[derive(Debug)]
 struct ScratchCard {
     id: i32,
     winning_numbers: Vec<i32>,
     numbers: Vec<i32>,
-    cards_won: Vec<i32>,
+    score: i32,
     count: i32,
 }
 
@@ -61,19 +62,15 @@ impl ScratchCard {
             id,
             winning_numbers,
             numbers,
-            cards_won: vec![],
+            score: 0,
             count: 1,
         }
     }
 
     fn evaluate(&mut self) {
-        let mut score = 0;
         for number in self.numbers.iter() {
             if self.winning_numbers.contains(number) {
-                score += 1;
-                for _ in 0..self.count {
-                    self.cards_won.push(self.id + score);
-                }
+                self.score += 1;
             }
         }
     }
@@ -86,8 +83,8 @@ pub fn part2(input: &[String]) -> i32 {
         .collect::<Vec<_>>();
     for i in 0..scratch_cards.len() {
         scratch_cards[i].evaluate();
-        for &id_copy in scratch_cards[i].cards_won.clone().iter() {
-            scratch_cards[(id_copy - 1) as usize].count += 1;
+        for index_copy in scratch_cards[i].id..=(scratch_cards[i].id + scratch_cards[i].score - 1) {
+            scratch_cards[index_copy as usize].count += scratch_cards[i].count;
         }
     }
 
