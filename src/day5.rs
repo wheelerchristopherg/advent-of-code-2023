@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::collections::VecDeque;
 
 #[derive(Debug)]
 struct Mapping {
@@ -113,21 +114,23 @@ pub fn part1(input: &[String]) -> i64 {
     let mut min_location = i64::MAX;
     for &seed in seeds.iter() {
         let mut value = seed;
-        println!("seed: {value}");
+        // println!("seed: {value}");
         'conversion: for conversion in states.iter() {
             for range in mappings.get(conversion).unwrap().iter() {
-                println!("\t{range:?}");
+                // println!("\t{range:?}");
                 if let Some(x) = range.map(value) {
                     value = x;
                     continue 'conversion;
                 }
             }
-            println!("\t{conversion}: {value}");
+            // println!("\t{conversion}: {value}");
         }
+        print!("{value} ");
         if value < min_location {
             min_location = value;
         }
     }
+    println!();
     min_location
 }
 
@@ -173,29 +176,26 @@ pub fn part2(input: &[String]) -> i64 {
             mappings[state].push(Mapping::new(line));
         }
     }
-    let mut results: [Vec<(i64, i64)>; 8] = [
-        seeds,
-        vec![],
-        vec![],
-        vec![],
-        vec![],
-        vec![],
-        vec![],
-        vec![],
+    let total_seeds = seeds.iter().fold(0, |acc, &(_, l)| acc + l);
+    println!("total seeds: {total_seeds}");
+    let mut results: [VecDeque<(i64, i64)>; 8] = [
+        seeds.into(),
+        VecDeque::new(),
+        VecDeque::new(),
+        VecDeque::new(),
+        VecDeque::new(),
+        VecDeque::new(),
+        VecDeque::new(),
+        VecDeque::new(),
     ];
     let mut min_location = i64::MAX;
 
-    let mut extras = vec![];
     let mut index = 0usize;
     while index < 7usize {
-        let source = if extras.is_empty() {
-            results[index].clone()
-        } else {
-            let extras_clone = extras.clone();
-            extras.clear();
-            extras_clone
-        };
-        'outer: for &(start, length) in source.iter() {
+        'outer: while !results[index].is_empty() {
+            let Some((start, length)) = results[index].pop_front() else {
+                panic!("This isn't right!")
+            };
             let mut mapped = false;
             'range: for range in mappings[index].iter() {
                 if mapped {
@@ -209,22 +209,29 @@ pub fn part2(input: &[String]) -> i64 {
                 }
                 for (x, y, b) in mapped_range {
                     if b {
-                        results[index + 1].push((x, y));
-                    } else if !extras.contains(&(x, y)) {
-                        extras.push((x, y));
+                        results[index + 1].push_back((x, y));
+                    } else {
+                        results[index].push_back((x, y));
                     }
                 }
             }
             if !mapped {
-                results[index + 1].push((start, length));
+                results[index + 1].push_back((start, length));
             }
         }
-        if extras.is_empty() {
+        println!("results: {:?}", results[index + 1]);
+        if results[index].is_empty() {
+            let total_values = results[index + 1].iter().fold(0, |acc, &(_, l)| acc + l);
+            println!("total values: {total_values}");
+            assert_eq!(total_seeds, total_values);
             index += 1;
         }
     }
+    let total_locations = results[7].iter().fold(0, |acc, &(_, l)| acc + l);
+    println!("total locations: {total_locations}");
 
-    for &(start, _) in results[6].iter() {
+    for &(start, _) in results[7].iter() {
+        println!("smallest loc in range {start}");
         if start < min_location {
             min_location = start;
         }
@@ -252,10 +259,20 @@ mod tests {
         println!("Result: {result}");
     }
 
+    fn print_range(result: &[(i64, i64, bool)]) {
+        for &(x, y, _) in result.iter() {
+            for i in x..x + y {
+                print!("{i} ");
+            }
+        }
+        println!();
+    }
+
     #[test]
     fn test_mapping_map2_1() {
         let mapper = Mapping::new("0 68 1");
         let result = mapper.map2(68, 1);
+        print_range(&result);
         let expected: Vec<(i64, i64, bool)> = vec![(0, 1, true)];
         println!("{:?}", result);
         assert_eq!(result, expected);
@@ -265,6 +282,7 @@ mod tests {
     fn test_mapping_map2_2() {
         let mapper = Mapping::new("50 5 8");
         let result = mapper.map2(3, 15);
+        print_range(&result);
         let expected: Vec<(i64, i64, bool)> = vec![(3, 2, false), (50, 8, true), (13, 5, false)];
         println!("{:?}", result);
         assert_eq!(result, expected);
@@ -274,6 +292,7 @@ mod tests {
     fn test_mapping_map2_3() {
         let mapper = Mapping::new("100 10 5");
         let result = mapper.map2(5, 10);
+        print_range(&result);
         let expected: Vec<(i64, i64, bool)> = vec![(5, 5, false), (100, 5, true)];
         println!("{:?}", result);
         assert_eq!(result, expected);
@@ -283,6 +302,7 @@ mod tests {
     fn test_mapping_map2_4() {
         let mapper = Mapping::new("100 10 5");
         let result = mapper.map2(10, 10);
+        print_range(&result);
         let expected: Vec<(i64, i64, bool)> = vec![(100, 5, true), (15, 5, false)];
         println!("{:?}", result);
         assert_eq!(result, expected);
@@ -292,6 +312,7 @@ mod tests {
     fn test_mapping_map2_5() {
         let mapper = Mapping::new("100 10 5");
         let result = mapper.map2(11, 2);
+        print_range(&result);
         let expected: Vec<(i64, i64, bool)> = vec![(101, 2, true)];
         println!("{:?}", result);
         assert_eq!(result, expected);
@@ -301,6 +322,7 @@ mod tests {
     fn test_mapping_map2_6() {
         let mapper = Mapping::new("100 10 5");
         let result = mapper.map2(11, 4);
+        print_range(&result);
         let expected: Vec<(i64, i64, bool)> = vec![(101, 4, true)];
         println!("{:?}", result);
         assert_eq!(result, expected);
@@ -310,6 +332,7 @@ mod tests {
     fn test_mapping_map2_7() {
         let mapper = Mapping::new("100 10 5");
         let result = mapper.map2(10, 4);
+        print_range(&result);
         let expected: Vec<(i64, i64, bool)> = vec![(100, 4, true)];
         println!("{:?}", result);
         assert_eq!(result, expected);
@@ -319,6 +342,7 @@ mod tests {
     fn test_mapping_map2_8() {
         let mapper = Mapping::new("100 10 5");
         let result = mapper.map2(15, 4);
+        print_range(&result);
         let expected: Vec<(i64, i64, bool)> = vec![(15, 4, false)];
         println!("{:?}", result);
         assert_eq!(result, expected);
@@ -328,6 +352,7 @@ mod tests {
     fn test_mapping_map2_9() {
         let mapper = Mapping::new("100 10 5");
         let result = mapper.map2(5, 5);
+        print_range(&result);
         let expected: Vec<(i64, i64, bool)> = vec![(5, 5, false)];
         println!("{:?}", result);
         assert_eq!(result, expected);
