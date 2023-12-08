@@ -1,8 +1,8 @@
-pub fn part1(input: &[String]) -> i32 {
+pub fn part1(input: &[String]) -> i64 {
     todo!()
 }
 
-pub fn part2(input: &[String]) -> i32 {
+pub fn part2(input: &[String]) -> i64 {
     todo!()
 }
 

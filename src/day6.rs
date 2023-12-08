@@ -54,7 +54,6 @@ pub fn part2(input: &[String]) -> i64 {
         if new_distance > distance {
             count += 1
         }
-        
     }
 
     count
